@@ -22,7 +22,7 @@ concept BookSentinel = true;
 
 template <typename P>
 concept BookPredicate = requires(P p, Book book) {
-    { p(book) } -> std::is_invocable<P, Book>;
+    { p(book) } -> std::convertible_to<bool>;
 };
 
 template <typename C>

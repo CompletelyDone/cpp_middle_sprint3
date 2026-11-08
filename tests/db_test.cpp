@@ -1,10 +1,19 @@
 #include "book.hpp"
 #include "book_database.hpp"
 
+#include <concepts>
 #include <gtest/gtest.h>
 #include <vector>
 
 using namespace bookdb;
+
+using DB = BookDatabase<std::vector<Book>>;
+
+static_assert(std::same_as<DB::value_type, Book>);
+static_assert(std::same_as<DB::iterator, std::vector<Book>::iterator>);
+static_assert(std::same_as<DB::const_iterator, std::vector<Book>::const_iterator>);
+static_assert(std::same_as<DB::size_type, std::vector<Book>::size_type>);
+static_assert(std::same_as<DB::difference_type, std::vector<Book>::difference_type>);
 
 namespace {
 constexpr std::string_view kTemplatesAuthor = "David Vandevoorde, Nicolai Josuttis, Douglas Gregor";

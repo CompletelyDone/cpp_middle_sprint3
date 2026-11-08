@@ -39,6 +39,13 @@ public:
         }
     }
 
+    // Учебное упрощение, чтобы не перетаскивать контейнер с авторами
+    BookDatabase(const BookDatabase &) = delete;
+    BookDatabase &operator=(const BookDatabase &) = delete;
+
+    BookDatabase(BookDatabase &&) = delete;
+    BookDatabase &operator=(BookDatabase &&) = delete;
+
     void Clear() {
         books_.clear();
         authors_.clear();

@@ -23,8 +23,9 @@ concept BookContainerLike = requires(T t, Book b) {
 
 template <typename T>
 concept BookIterator = requires(T t) {
-    ++t;
-    { *t } -> std::convertible_to<Book>;
+    requires std::is_lvalue_reference_v<std::iter_reference_t<T>>;
+    requires std::same_as<std::remove_cvref_t<std::iter_reference_t<T>>, Book>;
+    requires std::input_iterator<T>;
 };
 
 template <typename S, typename I>

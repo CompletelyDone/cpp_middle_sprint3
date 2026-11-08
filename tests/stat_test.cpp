@@ -161,3 +161,44 @@ TEST(Statistics, TopBooksEmpty) {
     BookDatabase<std::vector<Book>> db;
     EXPECT_TRUE(getTopNBy(db, 3, comp::LessByRating{}).empty());
 }
+
+TEST(Statistics, RandomBooksZeroCount) {
+    const auto db = MakeDatabase();
+
+    EXPECT_TRUE(sampleRandomBooks(db, 0).empty());
+}
+
+TEST(Statistics, RandomBooksCountExceedsSize) {
+    const auto db = MakeDatabase();
+    const auto sampled = sampleRandomBooks(db, db.size() + 5);
+
+    ASSERT_EQ(sampled.size(), db.size());
+
+    for (const auto &book : db) {
+        const auto count =
+            std::count_if(sampled.begin(), sampled.end(), [&book](const auto &ref) { return &ref.get() == &book; });
+
+        EXPECT_EQ(count, 1);
+    }
+}
+
+TEST(Statistics, TopBooksZeroCount) {
+    auto db = MakeDatabase();
+
+    EXPECT_TRUE(getTopNBy(db, 0, comp::LessByRating{}).empty());
+}
+
+TEST(Statistics, TopBooksCountExceedsSize) {
+    auto db = MakeDatabase();
+    const auto top = getTopNBy(db, db.size() + 5, comp::LessByRating{});
+
+    ASSERT_EQ(top.size(), db.size());
+
+    for (std::size_t i = 0; i < top.size(); ++i) {
+        EXPECT_EQ(&top[i].get(), &db.GetBooks()[i]);
+
+        if (i > 0) {
+            EXPECT_GE(top[i - 1].get().m_Rating, top[i].get().m_Rating);
+        }
+    }
+}

@@ -55,6 +55,19 @@ TEST(BookDB, InitConstructor) {
     ASSERT_TRUE(db.GetAuthors().size() == 3);
 }
 
+TEST(BookDB, Clear) {
+    BookDatabase<std::vector<Book>> db{
+        Book{kWheelTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount}};
+
+    db.Clear();
+
+    EXPECT_TRUE(db.empty());
+    EXPECT_EQ(db.size(), 0);
+    EXPECT_EQ(db.begin(), db.end());
+    EXPECT_TRUE(db.GetBooks().empty());
+    EXPECT_TRUE(db.GetAuthors().empty());
+}
+
 TEST(BookDB, SameAuthor) {
     BookDatabase<std::vector<Book>> db{
         Book{kWheelTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},

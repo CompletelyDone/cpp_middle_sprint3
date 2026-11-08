@@ -22,5 +22,8 @@ struct LessByReadCount {
 struct LessByYear {
     constexpr bool operator()(const Book &lhs, const Book &rhs) { return lhs.m_Year < rhs.m_Year; }
 };
+struct LessByPopularity {
+    constexpr bool operator()(const Book &lhs, const Book &rhs) { return lhs.m_ReadCount < rhs.m_ReadCount; }
+};
 
 }  // namespace bookdb::comp

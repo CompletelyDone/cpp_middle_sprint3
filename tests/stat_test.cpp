@@ -33,10 +33,10 @@ constexpr int kTemplatesReadCount = 10;
 
 BookDatabase<std::vector<Book>> MakeDatabase() {
     return BookDatabase<std::vector<Book>>{
-        Book{kWheelAuthor, kWheelTitle, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},
-        Book{kDraculaAuthor, kDraculaTitle, kDraculaYear, kDraculaGenre, kDraculaRating, kDraculaReadCount},
-        Book{kTemplatesAuthor, kTemplatesTitle, kTemplatesYear, kTemplatesGenre, kTemplatesRating, kTemplatesReadCount},
-        Book{kWheelAuthor, kWheelSecondTitle, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount}};
+        Book{kWheelTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},
+        Book{kDraculaTitle, kDraculaAuthor, kDraculaYear, kDraculaGenre, kDraculaRating, kDraculaReadCount},
+        Book{kTemplatesTitle, kTemplatesAuthor, kTemplatesYear, kTemplatesGenre, kTemplatesRating, kTemplatesReadCount},
+        Book{kWheelSecondTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount}};
 }
 }  // namespace
 
@@ -114,7 +114,7 @@ TEST(Statistics, AverageRatingEmpty) {
 
 TEST(Statistics, AverageRatingSingleBook) {
     const BookDatabase<std::vector<Book>> db{
-        Book{kDraculaAuthor, kDraculaTitle, kDraculaYear, kDraculaGenre, kDraculaRating, kDraculaReadCount}};
+        Book{kDraculaTitle, kDraculaAuthor, kDraculaYear, kDraculaGenre, kDraculaRating, kDraculaReadCount}};
     EXPECT_DOUBLE_EQ(calculateAverageRating(db), kDraculaRating);
 }
 

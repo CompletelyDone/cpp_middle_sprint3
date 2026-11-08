@@ -45,9 +45,9 @@ TEST(BookDB, EmptyDB) {
 
 TEST(BookDB, InitConstructor) {
     BookDatabase<std::vector<Book>> db{
-        Book{kTemplatesAuthor, kTemplatesTitle, kTemplatesYear, kTemplatesGenre, kTemplatesRating, kTemplatesReadCount},
-        Book{kWheelAuthor, kWheelTitle, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},
-        Book{kDraculaAuthor, kDraculaTitle, kDraculaYear, kDraculaGenre, kDraculaRating, kDraculaReadCount}};
+        Book{kTemplatesTitle, kTemplatesAuthor, kTemplatesYear, kTemplatesGenre, kTemplatesRating, kTemplatesReadCount},
+        Book{kWheelTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},
+        Book{kDraculaTitle, kDraculaAuthor, kDraculaYear, kDraculaGenre, kDraculaRating, kDraculaReadCount}};
 
     ASSERT_FALSE(db.empty());
     ASSERT_TRUE(db.size() == 3);
@@ -57,8 +57,8 @@ TEST(BookDB, InitConstructor) {
 
 TEST(BookDB, SameAuthor) {
     BookDatabase<std::vector<Book>> db{
-        Book{kWheelAuthor, kWheelTitle, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},
-        Book{kWheelAuthor, kWheelSecondTitle, kWheelSecondYear, kWheelSecondGenre, kWheelSecondRating,
+        Book{kWheelTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount},
+        Book{kWheelSecondTitle, kWheelAuthor, kWheelSecondYear, kWheelSecondGenre, kWheelSecondRating,
              kWheelSecondReadCount}};
 
     ASSERT_FALSE(db.empty());
@@ -69,7 +69,7 @@ TEST(BookDB, SameAuthor) {
 
 TEST(BookDB, EmplaceBack) {
     BookDatabase<std::vector<Book>> db;
-    db.EmplaceBack(kWheelAuthor, kWheelTitle, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount);
+    db.EmplaceBack(kWheelTitle, kWheelAuthor, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount);
 
     ASSERT_EQ(db.size(), 1);
     const auto &book = db.GetBooks().front();
@@ -87,7 +87,7 @@ TEST(BookDB, OwnsAuthorString) {
 
     {
         std::string author{kWheelAuthor};
-        Book book{author, kWheelTitle, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount};
+        Book book{kWheelTitle, author, kWheelYear, kWheelGenre, kWheelRating, kWheelReadCount};
 
         db.PushBack(book);
 

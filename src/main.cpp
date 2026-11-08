@@ -58,9 +58,9 @@ int main() {
     std::print("Average books rating in library: {}\n", avrRating);
 
     // Filters
-    // auto filtered = filterBooks(db.begin(), db.end(), all_of(YearBetween(1900, 1999), RatingAbove(4.5)));
-    // std::print("\n\nBooks from the 20th century with rating ≥ 4.5:\n");
-    // std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
+    auto filtered = filterBooks(db.begin(), db.end(), all_of(YearBetween(1900, 1999), RatingAbove(4.5)));
+    std::print("\n\nBooks from the 20th century with rating ≥ 4.5:\n");
+    std::for_each(filtered.cbegin(), filtered.cend(), [](const auto &v) { std::print("{}\n", v.get()); });
 
     // Top 3 books
     auto topBooks = getTopNBy(db, 3, comp::LessByRating{});

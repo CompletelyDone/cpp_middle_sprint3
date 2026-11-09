@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <array>
 #include <format>
 #include <stdexcept>
 #include <string_view>
@@ -11,16 +13,14 @@ enum class Genre { Fiction, NonFiction, SciFi, Biography, Mystery, Unknown };
 // Ваш код для constexpr преобразования строк в enum::Genre и наоборот здесь
 constexpr Genre GenreFromString(std::string_view s) {
     // Ваш код здесь
-    // clang-format off
-    if (s == "Fiction")         return Genre::Fiction;
-    else if (s == "NonFiction") return Genre::NonFiction;
-    else if (s == "SciFi")      return Genre::SciFi;
-    else if (s == "Biography")  return Genre::Biography;
-    else if (s == "Mystery")    return Genre::Mystery;
-    else if (s == "Unknown")    return Genre::Unknown;
-    // clang-format on
+    constexpr std::array<std::string_view, 5> names{"Fiction", "NonFiction", "SciFi", "Biography", "Mystery"};
+    const auto it = std::find(names.begin(), names.end(), s);
 
-    return Genre::Unknown;
+    if (it == names.end()) {
+        return Genre::Unknown;
+    }
+
+    return static_cast<Genre>(it - names.begin());
 }
 
 struct Book {

@@ -104,6 +104,42 @@ TEST(BookDB, EmplaceBack) {
     EXPECT_EQ(book.m_ReadCount, kWheelReadCount);
 }
 
+TEST(BookDB, ManyBooks) {
+    DB db;
+    constexpr int kBookCount = 15'000;
+    constexpr int kAuthorCount = 10'001;
+
+    for (int i = 0; i < kBookCount; ++i) {
+        const auto title = std::format("Book {}", i);
+        const auto author = std::format("Author {}", i % kAuthorCount);
+
+        Book book{title, author, 1900 + i % 100, Genre::Fiction, 4.5, i};
+
+        db.PushBack(std::move(book));
+    }
+
+    ASSERT_EQ(db.size(), kBookCount);
+    ASSERT_EQ(db.GetAuthors().size(), kAuthorCount);
+
+    const auto books = db.GetBooks();
+
+    for (int i = 0; i < kBookCount; ++i) {
+        const auto &book = books[i];
+        const auto expected_author = std::format("Author {}", i % kAuthorCount);
+
+        EXPECT_EQ(book.m_Title, std::format("Book {}", i));
+        EXPECT_EQ(book.m_Author, expected_author);
+        EXPECT_EQ(book.m_Year, 1900 + i % 100);
+        EXPECT_EQ(book.m_Genre, Genre::Fiction);
+        EXPECT_DOUBLE_EQ(book.m_Rating, 4.5);
+        EXPECT_EQ(book.m_ReadCount, i);
+
+        const auto it = db.GetAuthors().find(expected_author);
+        ASSERT_NE(it, db.GetAuthors().end());
+        EXPECT_EQ(book.m_Author.data(), it->data());
+    }
+}
+
 TEST(BookDB, OwnsAuthorString) {
     BookDatabase<std::vector<Book>> db;
 

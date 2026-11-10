@@ -21,16 +21,12 @@ namespace bookdb {
 
 template <BookContainerLike T, typename Comparator = TransparentStringLess>
 auto buildAuthorHistogramFlat(const BookDatabase<T> &cont, Comparator comp = {}) {
-    std::flat_map<std::string_view, std::size_t, Comparator> result(comp);
-
-    // Вопрос. Почему такой код даёт ошибку компиляции?
-    // std::for_each(cont.begin(), cont.end(), [&result](const Book &book) { result[book.m_Author]++; });
-    std::for_each(cont.begin(), cont.end(), [&result](const Book &book) {
-        auto [it, inserted] = result.try_emplace(book.m_Author, 0);
-        ++it->second;
-    });
-
-    return result;
+    return std::accumulate(cont.begin(), cont.end(), std::flat_map<std::string_view, std::size_t, Comparator>{comp},
+                           [](auto histogram, const Book &book) {
+                               auto [it, inserted] = histogram.try_emplace(book.m_Author, 0);
+                               ++it->second;
+                               return histogram;
+                           });
 }
 
 template <BookIterator It, BookSentinel<It> Sent>
@@ -47,11 +43,11 @@ auto calculateGenreRatings(It first, Sent last) {
         iter++;
     }
 
-    std::for_each(map.begin(), map.end(), [&result](const auto &entry) {
+    std::transform(map.begin(), map.end(), std::inserter(result, result.end()), [](const auto &entry) {
         const auto &[genre, stats] = entry;
         const auto &[sumRating, count] = stats;
 
-        result.emplace(genre, sumRating / count);
+        return std::pair{genre, sumRating / count};
     });
 
     return result;
@@ -83,13 +79,14 @@ auto getTopNBy(BookDatabase<T> &cont, size_t n, Comparator comp) {
     // Если кол-во запрошенных элементов больше размера бд, вернем всё чо есть
     if (n > cont.size())
         n = cont.size();
+
+    result.reserve(n);
+
     std::partial_sort(cont.begin(), cont.begin() + n, cont.end(), [&comp](const Book &first, const Book &second) {
         return comp(second, first);  // Чтобы развернуть список
     });
 
-    for (size_t i = 0; i < n; ++i) {
-        result.push_back(*(cont.begin() + i));
-    }
+    std::copy_n(cont.begin(), n, std::back_inserter(result));
 
     return result;
 }
